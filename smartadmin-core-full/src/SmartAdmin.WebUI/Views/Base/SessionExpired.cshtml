@@ -1,0 +1,47 @@
+﻿<style>
+    .error-template {
+        padding: 40px 15px;
+        text-align: center;
+    }
+
+    .error-actions {
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+
+    .error-actions .btn {
+        margin-right: 10px;
+    }
+</style>
+
+<div id="panel-3" class="panel">
+    <div class="panel-hdr">
+    </div>
+    <div class="panel-container show">
+        <div class="panel-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="error-template">
+                            <h1>
+                                عذراً!
+                            </h1>
+                            <h2>
+                                انتهت الجلسة
+                            </h2>
+                            <div class="error-details">
+                                برجاء تسجيل الدخول مجدداً
+                            </div>
+                            <div class="error-actions">
+                                <a href="@Url.Action("Login","Account")" class="btn btn-primary btn-lg">
+                                    <span class="glyphicon glyphicon-login"></span>
+                                    تسجيل الدخول
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

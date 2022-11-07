@@ -1,0 +1,646 @@
+﻿<script>
+    $(document).ready(function () {
+        //DrawTable(null);
+    });
+
+    function reload() {
+        location.reload();
+    }
+
+    function RedirectToFind(redirectUrl) {
+        window.location.href = redirectUrl;
+    }
+
+
+    var StartDateID = undefined;
+    var EndDateID = undefined;
+
+    var hasBusinessValidation = undefined;
+
+    function disableSaveButton(button_ID) {
+        $("#" + button_ID).attr("disabled", "disabled");
+    }
+    function enableSaveButton(button_ID) {
+        $("#" + button_ID).removeAttr("disabled");
+    }
+    var details; var itemsTable;
+    function saveForm(formId, saveUrl, redirectUrl, appendToSerializedObject, callback, Button_Id) {
+        debugger;
+        form = $("#" + formId);
+
+        if (form[0].checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+            form.addClass('was-validated');
+            return;
+        }
+
+        disableButtons();
+        var formData = new FormData();
+
+        var attachControl = document.getElementById("file2");
+        if (attachControl != null) {
+            var totalFiles = document.getElementById("file2").files.length;
+            for (var i = 0; i < totalFiles; i++) {
+                var file = document.getElementById("file2").files[i];
+
+                formData.append("file", file);
+            }
+        }
+
+        var inputs = $("#" + formId).find(':disabled');
+        inputs.attr('disabled', false);
+
+        var object = $('#smart-form').serialize();
+
+        var _object = getSerializedObject(formId);
+
+        debugger;
+        if (appendToSerializedObject) {
+            _object = _object + appendToSerializedObject;
+        }
+
+
+        debugger;
+        console.log(_object);
+
+        // add disabled attribute
+        inputs.attr('disabled', true);
+
+        var splitted = _object.split('&');
+        jQuery.each(splitted, function (index, value) {
+
+            var fields = value.split('=');
+
+            if (fields[0] && fields[1]) {
+                // use decodeURIComponent because form serialize encode all values
+                formData.append(fields[0], decodeURIComponent(fields[1].replace(/\+/g, ' ')));
+            }
+        });
+
+        if (details) {
+            var i = 0;
+            for (var a in details) {
+                var object = details[a];
+                for (var property in object) {
+                    console.log(property + ': ' + object[property] + '; ');
+                    formData.append(detailsListName + "[" + i + "]." + property, object[property]);
+                }
+                i++;
+            }
+        }
+
+        console.log(formData);
+
+        $.ajax({
+            url: saveUrl,
+            dataType: "json",
+            data: formData,
+            type: "POST",
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                handleSaveResponse(formId, data, redirectUrl, itemsTable, callback);
+            },
+            error: function (data) {
+                handleSaveResponse(formId, data, redirectUrl, itemsTable, callback);
+                toastr["error"]("الرجاء إعادة تسجيل الدخول", "خطأ فى الحفظ");
+                setTimeout(function () {
+                    window.location.href = "@Url.Action("SessionExpired", "Base")";
+                }, 2000);
+            }
+        });
+    }
+
+    function saveFormCustom(formId, saveUrl, redirectUrl, appendToSerializedObject, callback, Button_Id) {
+        debugger;
+        form = $("#" + formId);
+
+        if (form[0].checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+            form.addClass('was-validated');
+            return;
+        }
+
+        disableButtons();
+        var formData = new FormData();
+
+        var attachControl = document.getElementById("file2");
+        if (attachControl != null) {
+            var totalFiles = document.getElementById("file2").files.length;
+            for (var i = 0; i < totalFiles; i++) {
+                var file = document.getElementById("file2").files[i];
+
+                formData.append("file", file);
+            }
+        }
+
+        var inputs = $("#" + formId).find(':disabled');
+        inputs.attr('disabled', false);
+
+        var object = $('#smart-form').serialize();
+
+        var _object = getSerializedObject(formId);
+
+        debugger;
+        if (appendToSerializedObject) {
+            _object = _object + appendToSerializedObject;
+        }
+
+
+        debugger;
+        console.log(_object);
+
+        // add disabled attribute
+        inputs.attr('disabled', true);
+
+        var splitted = _object.split('&');
+        jQuery.each(splitted, function (index, value) {
+
+            var fields = value.split('=');
+
+            if (fields[0] && fields[1]) {
+                // use decodeURIComponent because form serialize encode all values
+                formData.append(fields[0], decodeURIComponent(fields[1].replace(/\+/g, ' ')));
+            }
+        });
+
+        if (details) {
+            var i = 0;
+            for (var a in details) {
+                var object = details[a];
+                for (var property in object) {
+                    console.log(property + ': ' + object[property] + '; ');
+                    formData.append(detailsListName + "[" + i + "]." + property, object[property]);
+                }
+                i++;
+            }
+        }
+
+        console.log(formData);
+
+        $.ajax({
+            url: saveUrl,
+            dataType: "json",
+            data: formData,
+            type: "POST",
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                handleSaveResponse(formId, data, redirectUrl, itemsTable, callback);
+                changeCustomer();
+            },
+            error: function (data) {
+                handleSaveResponse(formId, data, redirectUrl, itemsTable, callback);
+                toastr["error"]("الرجاء إعادة تسجيل الدخول", "خطأ فى الحفظ");
+                setTimeout(function () {
+                    window.location.href = "@Url.Action("SessionExpired", "Base")";
+                }, 2000);
+            }
+        });
+    }
+
+    function changeCustomer() {
+        $.ajax({
+            url: '@Url.Action("getAllCustomers", "Cars")',
+            type: 'GET',
+            cache: false,
+            success: function (data) {
+                var s = '<option></option>';
+                var x='';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].n_customer_id + '">' + data[i].s_customer_name + '</option>';
+                    x = data[i].n_current_cust;
+                }
+                debugger;
+                $("#n_customer_id").html(s);
+                $("#n_customer_id").val(x).trigger("change");
+                $("#s_customer_name").val([]).change();
+                $("#ex_customer").trigger("click");
+            }
+        });
+    }
+
+    function handleSaveResponse(formId, data, redirectUrl, datatable, callback) {
+        debugger;
+        console.log(data);
+        showNotification(data);
+        if (data.statusCode == 1 || data.statusCode == 3) {
+            if (redirectUrl) {
+                ResetForm(formId);
+                setTimeout(function () {
+                    RedirectToFind(redirectUrl);
+                }, 1000);
+            }
+            else {
+                if (formId) {
+                    if (!callback) {
+                        //reload();
+                        //ResetForm(formId);
+                        ResetForm(formId, oTable);
+                    }
+                }
+            }
+        }
+
+        enableButtons();
+        if (callback) {
+            callback(data.TempId);
+        }
+
+    }
+
+    function getSerializedObject(formId) {
+        // read input with numbers attribute
+        var numberObject = $("#" + formId + " input[number=number]").serialize().replace(/\%2C/g, '');
+        // read input with type radio
+        var radioObject = $("#" + formId + " input[type=radio]").serialize().replace(/\on/g, true).replace(/\off/g, false);
+
+        var hiddenObjects = $("#" + formId + " input[type=hidden]").serialize();
+        console.log($("#" + formId + " input[type=hidden]"));
+        console.log(hiddenObjects);
+
+        var checkboxObject = $("#" + formId + " input[type=checkbox]").serialize().replace(/\on/g, true).replace(/\off/g, false);
+
+        // read remaining inputs
+        var inputObject = $("#" + formId).find('input').filter('input[type!=radio]').filter('input[type!=checkbox]').filter('input[number!=number]').serialize();
+
+        //debugger;
+        // read select and textarea
+        var otherObject = $("#" + formId).find('select:not([multiple]),textarea').serialize();
+
+
+        console.log(otherObject);
+        var multipleObject = "";
+        $("#" + formId + " select[multiple]").each(function () {
+            if ($(this).val() != null) {
+                multipleObject += $(this).attr('id') + '=' + $(this).val().join(",") + '&';
+                // do your stuff
+            }
+        });
+        console.log(multipleObject);
+
+        var _object = numberObject + '&' + radioObject + hiddenObjects + '&' + '&' + checkboxObject + '&' + inputObject + '&' + otherObject + '&' + multipleObject;
+
+        return _object;
+    }
+    function disableButtons() {
+        //debugger;
+        $(':button').prop('disabled', true);
+        $("input[type=button]").attr("disabled", "disabled");
+    }
+    function enableButtons() {
+        $(':button').prop('disabled', false);
+        $("input[type=button]").attr("disabled", "false");
+    }
+
+    function Find() {
+        var _object = $('#' + formId).serialize();
+        $.ajax({
+            url: findUrl,
+            dataType: "json",
+            data: _object,
+            type: "Post",
+            success: function (data) {
+                DrawTable(data);
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    }
+    /*fadeInRight*/
+    function showNotificationMessage(title, message, color, icon, time) {
+        debugger;
+        $.smallBox({
+            title: title,
+            content: "<i class='fa fa-clock-o'></i> <i>" + message + "</i>",
+            color: color,
+            iconSmall: icon + "fadeInRight animated",
+            timeout: time
+        });
+    }
+    function showNotification(Logger) {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": true,
+            "onclick": null,
+            "showDuration": 300,
+            "hideDuration": 100,
+            "timeOut": 2000,
+            "extendedTimeOut": 1000,
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+        if (Logger.statusCode == 0) {
+            toastr["info"]("", Logger.UserMessage);
+        }
+        else if (Logger.statusCode == 1) {
+            toastr["success"]("تم الحفظ بنجاح", "تم الحفظ");
+        }
+        else if (Logger.statusCode == 2) {
+            if (Logger.errorMessage) {
+                toastr["error"]("حدثت مشكلة", Logger.errorMessage);
+            }
+            if (Logger.userMessage) {
+                toastr["error"]("حدثت مشكلة", Logger.userMessage);
+            }
+            else {
+                toastr["error"]("حدثت مشكلة", "Error in the request");
+            }
+        }
+        else if (Logger.statusCode == 3) {
+            toastr["success"]("تم الحفظ بنجاح", Logger.UserMessage);
+        }
+
+    }
+
+
+    function ResetForm(formId, detialsDatatable) {
+        debugger;
+        //var validator = $("#" + formId).validate();
+
+        //if (validator) {
+        //    validator.resetForm();
+        //}
+
+        ResetInputs();
+
+        var form = $("#" + formId)[0];
+        if (form) {
+            form.reset();
+        }
+
+        //$(formId + " .select2").prop('selectedIndex', 0).trigger('change');
+
+        $("#" + formId + " .select2-hidden-accessible").each(function () {
+            $(this).prop('selectedIndex', 0).trigger('change'); // This is the jquery object of the input, do what you will
+
+        });
+
+        if (detialsDatatable) {
+            ResetDatatable(detialsDatatable);
+        }
+
+    }
+
+    function ResetDatatable(datatable) {
+        if (datatable) {
+            datatable.clear().draw();
+        }
+    }
+
+    function clearDetails() {
+        if (itemsTable) {
+            itemsTable.clear().draw();
+        }
+    }
+
+    function ResetInputs() {
+        var arrText = new Array();
+        $('input[type=text]').each(function () {
+            //$(this).parents().removeClass("state-error");
+            $(this).parent().removeClass(function (index, css) {
+                return (css.match(/(^|\s)state\S+/g) || []).join(' ');
+            });
+        });
+        $('input[type=number]').each(function () {
+            //$(this).parents().removeClass("state-error");
+            $(this).parent().removeClass(function (index, css) {
+                return (css.match(/(^|\s)state\S+/g) || []).join(' ');
+            });
+        });
+        // select labels
+        $('#' + formId + ' label.select').each(function () {
+            //$(this).parents().removeClass("state-error");
+            $(this).removeClass(function (index, css) {
+                return (css.match(/(^|\s)state\S+/g) || []).join(' ');
+            });
+        });
+    }
+
+    //Delete Function
+    var rowID;
+    function getRow(rowNo) {
+        debugger;
+        rowID = rowNo;
+    }
+
+    function deleteRow(urlD, ID, redirectUrl) {
+        debugger;
+        disableButtons();
+        $.ajax({
+            url: urlD,
+            type: 'POST',
+            data: { 'id': ID },
+            success: function (data) {
+                handleDeleteResponse(data, redirectUrl);
+            },
+            error: function (data) {
+                handleDeleteResponse(data, redirectUrl);
+            }
+        });
+    }
+
+    function showDeleteNotification(Logger) {
+        if (Logger.statusCode == 0) {
+            toastr["info"]("", Logger.userMessage);
+        }
+        else if (Logger.statusCode == 1) {
+            toastr["info"]("تم الحذف بنجاح", "تم الحذف");
+        }
+        else if (Logger.statusCode == 2) {
+            if (Logger.errorMessage) {
+                toastr["error"]("حدثت مشكلة", Logger.errorMessage);
+            }
+            if (Logger.userMessage) {
+                toastr["error"]("حدثت مشكلة", Logger.userMessage);
+            }
+            else {
+                toastr["error"]("حدثت مشكلة", "Error in the request");
+            }
+        }
+        else if (Logger.statusCode == 3) {
+            toastr["info"]("تم الحذف بنجاح", Logger.userMessage);
+        }
+    }
+
+    function handleDeleteResponse(data, redirectUrl) {
+        debugger;
+        console.log(data);
+        showDeleteNotification(data);
+        if (data.statusCode == 1 || data.statusCode == 3) {
+            if (redirectUrl) {
+                setTimeout(function () {
+                    RedirectToFind(redirectUrl);
+                }, 1000);
+            }
+            else {
+                setTimeout(function () {
+                    reload();
+                }, 1000);
+            }
+        }
+        enableButtons();
+    }
+    function returnToIndex(URL) {
+        location.href = URL;
+    }
+    var oTable; var datatablesButtons = [];
+    var IsServerTable = false;
+    function DrawTable(data) {
+        debugger;
+        oTable = $('#datatable_tabletools').DataTable({
+            bDestroy: true,
+            data: data,
+            //language: {
+            //    url: languageJsonUrl
+            //},
+            columns: columns,
+            processing: true,
+            responsive: true,
+            //columnDefs: columnsDefs,
+            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-6 hidden-xs'T>r>" +
+                "t" +
+                "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>",
+            "oTableTools": {
+                "aButtons": datatablesButtons
+            },
+            "autoWidth": true
+        });
+    }
+
+    function BeforeDeleteRow(index) {
+        return true;
+    }
+    function DeleteDetailsRow(index, t) {
+
+        debugger;
+        if (!BeforeDeleteRow(index)) { return; }
+        Swal.fire({
+            title: "حذف",
+            text: "هل تريد الحذف...؟",
+            type: "warning",
+            showCancelButton: true,
+            cancelButtonText: "لا",
+            confirmButtonText: "نعم"
+        }).then(function (result) {
+            if (result.value) {
+                details = details.filter(function (_obj) { return _obj.n_serial != index });
+                $(t).closest('tr').remove().draw();
+                for (var i = 0; i < details.length; i++) {
+                    details[i].nLineNo = i + 1;
+                }
+                return;
+            }
+        });
+    }
+
+    function showErrorNotification(Header, Message) {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": true,
+            "onclick": null,
+            "showDuration": 300,
+            "hideDuration": 100,
+            "timeOut": 1500,
+            "extendedTimeOut": 1000,
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+        toastr["error"](Header, Message);
+    }
+
+
+    function DrawIndexTable(data) {
+        debugger;
+        $('#dt-list').dataTable({
+            dom: "<'row mb-3'<'col-sm-12 col-md-6 d-flex align-items-center justify-content-start'f><'col-sm-12 col-md-6 d-flex align-items-center justify-content-end'B>>" +
+				"<'row'<'col-sm-12'tr>>" +
+				"<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            ajax: getUrl,
+            columns: columnsIndex,
+			altEditor: true,
+            responsive: true,
+            //bServerSide: true,
+            processing: true,
+            filter: true,
+            pageLength: 15,
+            "aaSorting": [],
+            "oLanguage": {
+                "sEmptyTable": "لا توجد بيانات للعرض"
+            },
+            buttons: [
+                {
+                    text: '<i class="@(Settings.Theme.IconPrefix) fa-plus mr-1"></i> اضافة',
+                    className: 'btn-primary btn-sm mr-1',
+                    action: function (e, dt, node, config) {
+                        location.href = addUrl;
+                    }
+                },
+				{
+                    text: '<i class="@(Settings.Theme.IconPrefix) fa-sync mr-1"></i> تحديث',
+					name: 'refresh',
+                    className: 'btn-success btn-sm'
+                },
+                'pageLength'
+            ],
+            lengthMenu: [
+                [ 10, 25, 50, -1 ],
+                [ '10 rows', '25 rows', '50 rows', 'Show all' ]
+            ],
+            initComplete: function () {
+                var api = this.api();
+                if (parseInt('@HttpContextAccessor.HttpContext.Session.GetInt32("bSave")') == 0) {
+                    api.buttons(0).enable(false);
+                }
+                if (parseInt('@HttpContextAccessor.HttpContext.Session.GetInt32("bEdit")') == 0) {
+                    api.column(-2).visible(false);
+                }
+                if (parseInt('@HttpContextAccessor.HttpContext.Session.GetInt32("bDelete")') == 0) {
+                    api.column(-1).visible(false);
+                }
+            }
+        });
+    }
+    //var CreateModal = "NewModal";
+    //var EditModal = "ModalEdit";
+    //var postType = "POST";
+    //var putType = "PUT";
+    //var deleteType = "DELETE";
+
+    //function editForm(link, doc_id) {
+    //    $.ajax({
+    //        url: link,
+    //        type: 'get',
+    //        data: { 'n_doc_no': doc_id },
+    //            success: function (result) {
+    //                $('#EditModal').html(result);
+    //                showModal(EditModal);
+    //        },
+    //        error: function (ex) {
+    //            console.log(ex);
+    //        }
+    //    });
+    //}
+
+    //function closeModal(NewModal) {
+    //    $("#" + NewModal).modal('hide');
+    //}
+    //    function showModal(NewModal) {
+    //    $("#"  + NewModal).modal('show');
+    //}
+
+</script>

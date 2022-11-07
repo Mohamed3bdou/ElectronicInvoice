@@ -1,0 +1,75 @@
+﻿@model SmartAdmin.WebUI.Models.ar_customers
+@{
+    ViewData["Title"] = "اضافة عميل";
+    ViewData["PageName"] = "CustomerCreate";
+    ViewData["Heading"] = "<i class='fal fa-folder-open'></i><span class='fw-300'>اضافة عميل</span>";
+    ViewData["PageIcon"] = "fa-folder-open";
+}
+
+
+<div id="panel-3" class="panel" style="font-family: 'Droid Arabic Kufi', serif;font-weight:bold;">
+    <div class="panel-hdr">
+        <h2>
+            اضافة عميل
+        </h2>
+        <div class="panel-toolbar">
+            <button class="btn btn-panel" data-action="panel-collapse" data-toggle="tooltip" data-offset="0,10" data-original-title="Collapse"></button>
+            <button class="btn btn-panel" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"></button>
+        </div>
+    </div>
+    <div class="panel-container show">
+        <div class="panel-content">
+            <form class="smart-form" id="smart-form" method="post">
+                <div class="row">
+                    <section class="col col-6">
+                        <label class="label">اسم العميل<span style="color:red">&nbsp;</span></label>
+                        <input type="text" asp-for="s_customer_name" class="form-control" required="required" />
+                        <div class="invalid-feedback">من فضلك ادخل اسم العميل</div>
+                    </section>
+                    <section class="col col-6">
+                        <label class="label">اسم العميل انجليزى</label>
+                        <input type="text" asp-for="s_customer_name_eng" class="form-control" />
+                    </section>
+                </div>
+                <br />
+                <div class="row">
+                    <section class="col col-6">
+                        <label class="label">العنوان<span style="color:red">&nbsp;</span></label>
+                        <input type="text" asp-for="s_customer_address" class="form-control" required="required" />
+                        <div class="invalid-feedback">من فضلك ادخل عنوان العميل</div>
+                    </section>
+                </div>
+                <br />
+                <div class="row">
+                    <section class="col col-6">
+                        <label class="label">رقم الهاتف</label>
+                        <input type="number" asp-for="s_customer_phone_no" class="form-control" />
+                    </section>
+                    <section class="col col-6">
+                        <label class="label">رقم الهوية</label>
+                        <input type="text" asp-for="s_addtional" class="form-control" />
+                    </section>
+                </div>
+                <br />
+
+                <br />
+                <div class="text-left">
+                    <button type="button" class="btn btn-primary position-relative" onclick="saveForm(formId,saveUrl);">حفظ</button>
+                    <button type="button" class="btn btn-default position-relative" onclick="ResetForm(formId);">مسح</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section ScriptsBlock {
+    <script type="text/javascript">
+        var formId = "smart-form";
+        var saveUrl = "@Url.Action("customerCreate", "Customer")";
+
+        $(document).ready(function () {
+            //$("#s_related_account_no").select2({ dir: "rtl" });
+        });
+
+    </script>
+}

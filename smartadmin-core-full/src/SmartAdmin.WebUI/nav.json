@@ -1,0 +1,28 @@
+﻿{
+  "lists": [
+    {
+      "title": "استعلام",
+      "href": "EInvoice/EInvoiceDashboard",
+      "icon": "fal fa-table",
+      "roles": []
+    },
+    {
+      "title": "الاصناف",
+      "href": "Items/ItemsIndex",
+      "icon": "fal fa-book",
+      "roles": []
+    },
+    {
+      "title": "العملاء",
+      "href": "Customer/CustomersIndex",
+      "icon": "fal fa-chart-pie",
+      "roles": []
+    },
+    {
+      "title": "الفواتير",
+      "href": "EInvoice/EInvoiceIndex",
+      "icon": "fal fa-file-invoice",
+      "roles": []
+    }
+  ]
+}

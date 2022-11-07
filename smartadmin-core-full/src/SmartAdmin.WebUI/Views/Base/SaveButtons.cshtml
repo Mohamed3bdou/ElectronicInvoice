@@ -1,0 +1,23 @@
+﻿@if (ViewBag.Mode == SmartAdmin.WebUI.App_Helpers.FormMode.Create)
+{
+        <div class="modal-footer">
+            <button type="submit" id="js-login-btn" class="btn btn-primary" onclick="saveForm(formId,saveUrl);"> حفظ وجديد</button>
+            <button type="submit" id="js-login-btn" class="btn btn-primary" onclick="saveForm(formId,saveUrl,findUrl);"> حفظ واغلاق</button>
+            <button type="button" class="btn btn-default" onclick="returnToIndex(findUrl);">إغلاق</button>
+            @if (ViewBag.FormType == SmartAdmin.WebUI.App_Helpers.FormType.MasterDetails)
+            {
+                <button type="button" class="btn btn-default" onclick="ResetForm(formId,oTable);">مسح</button>
+            }
+            else {
+                <button type="button" class="btn btn-default" onclick="ResetForm(formId);">مسح</button>
+            }
+        </div>
+
+        }
+else if (ViewBag.Mode == SmartAdmin.WebUI.App_Helpers.FormMode.Update)
+{
+    <div class="modal-footer">
+        <button type="submit" id="js-login-btn" class="btn btn-primary" onclick="saveForm(formId,editUrl,findUrl);"> حفظ</button>
+        <button type="button" class="btn btn-default" onclick="returnToIndex(findUrl);">إلغاء</button>
+    </div>
+}

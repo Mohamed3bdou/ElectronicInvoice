@@ -1,0 +1,134 @@
+﻿@if (Settings.Features.AppHeader)
+{
+<header class="page-header" role="banner">
+    <partial name="_Logo" />
+    @if (Settings.Features.AppLayoutShortcut)
+    {
+        <div class="hidden-md-down dropdown-icon-menu position-relative">
+            <a href="#" class="header-btn btn js-waves-off" data-action="toggle" data-class="nav-function-hidden" title="Hide Navigation">
+                <i class="ni ni-menu"></i>
+            </a>
+            <ul>
+                <li>
+                    <a href="#" class="btn js-waves-off" data-action="toggle" data-class="nav-function-minify" title="Minify Navigation">
+                        <i class="ni ni-minify-nav"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="btn js-waves-off" data-action="toggle" data-class="nav-function-fixed" title="Lock Navigation">
+                        <i class="ni ni-lock-nav"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+     }
+    <div class="hidden-lg-up">
+        <a href="#" class="header-btn btn press-scale-down" data-action="toggle" data-class="mobile-nav-on">
+            <i class="ni ni-menu"></i>
+        </a>
+    </div>
+    @*<div class="search">
+            <form class="app-forms hidden-xs-down" role="search" asp-controller="Page" asp-action="Search" autocomplete="off">
+                <input type="text" id="search-field" placeholder="Search for anything" class="form-control" tabindex="1">
+                <a href="#" onclick="return false;" class="btn-danger btn-search-close js-waves-off d-none" data-action="toggle" data-class="mobile-search-on">
+                    <i class="@(Settings.Theme.IconPrefix) fa-times"></i>
+                </a>
+            </form>
+        </div>*@
+
+    @*<ul class="header-dropdown-list">
+        <li>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <img src="~/content/img/blank.gif" class="flag flag-@Resources.Resource.currentLangaugeFlagAbbrevation" alt="@Resources.Resource.currentLanguage"> <span> @Resources.Resource.currentLanguage </span> <i class="fa fa-angle-down"></i> </a>
+            <ul class="dropdown-menu pull-right">
+                <li class="active LanguageSelector">
+                    <a href="javascript:void(0);" onclick="changeLanguage('en')"><img src="~/content/img/blank.gif" class="flag flag-us" alt="@Resources.Resource.English"> @Resources.Resource.English</a>
+                </li>
+                <li class="LanguageSelector">
+                    <a href="javascript:void(0);" onclick="changeLanguage('ar')"><img src="~/content/img/blank.gif" class="flag flag-sa" alt="@Resources.Resource.Arabic"> @Resources.Resource.Arabic</a>
+                </li>
+            </ul>
+        </li>
+    </ul>*@
+
+<div class="ml-auto d-flex">
+    <div class="hidden-sm-up">
+        <a href="#" class="header-icon" data-action="toggle" data-class="mobile-search-on" data-focus="search-field" title="Search">
+            <i class="@(Settings.Theme.IconPrefix) fa-search"></i>
+        </a>
+    </div>
+    @*<div>
+                    <a href="#" class="header-icon" data-toggle="dropdown" title="My Apps">
+                        <i class="@(Settings.Theme.IconPrefix) fa-cube"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-animated w-auto h-auto">
+                        <partial name="_DropdownApp"/>
+                    </div>
+                </div>
+                @if (Settings.Features.ChatInterface)
+        {
+                <a href="#" class="header-icon" data-toggle="modal" data-target=".js-modal-messenger">
+                    <i class="@(Settings.Theme.IconPrefix) fa-globe"></i>
+                    <span class="badge badge-icon">!</span>
+                </a>
+                }
+                <div>
+                    <a href="#" class="header-icon" data-toggle="dropdown" title="You got 11 notifications">
+                        <i class="@(Settings.Theme.IconPrefix) fa-bell"></i>
+                        <span class="badge badge-icon">11</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-animated dropdown-xl">
+                        <partial name="_DropdownNotification"/>
+                    </div>
+                </div>
+                <div>
+                    <a href="#" data-toggle="dropdown" title="@(Settings.Theme.Email)" class="header-icon d-flex align-items-center justify-content-center ml-2">
+                        <img src="~/img/demo/avatars/@(Settings.Theme.Avatar)" class="profile-image rounded-circle" alt="@(Settings.Theme.User)">
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-animated dropdown-lg">
+                        <partial name="_DropdownMenu"/>
+                    </div>
+                </div>*@
+    @*<div class="btn-header transparent">
+            <span> <a href="@Url.Action("Login", "Account")" class="header-icon d-flex align-items-center justify-content-center ml-2" title="@Resources.Resource.Logout" data-tilemsg="@Resources.Resource.Logout" data-action="userLogout" data-logout-msg="@Resources.Resource.LogoutMsg" data-buttonyestitle="@Resources.Resource.YES" data-buttonnotitle="@Resources.Resource.NO"><i class="fal fa-sign-out"></i></a></span>
+        </div>*@
+    @if (!string.IsNullOrEmpty(HttpContextAccessor.HttpContext.Session.GetInt32("userRole").ToString()))
+    {
+        if (HttpContextAccessor.HttpContext.Session.GetInt32("userRole") ==1)//If it's Admin then show setting menu
+        {
+            <div class="hidden-md-down">
+                <a href="#" class="header-icon" data-toggle="modal" data-target=".js-modal-settings">
+                    <i class="@(Settings.Theme.IconPrefix) fa-cog"></i>
+                </a>
+            </div>
+        }
+        <a class="header-icon d-flex align-items-center justify-content-center ml-2" data-toggle="modal" data-target="#exampleModalCenter"><i class="fal fa-sign-out"></i></a>
+    }
+    else
+    {
+        <a class="header-icon d-flex align-items-center justify-content-center ml-2" href="@Url.Action("Login","Account")"><i class="fal fa-sign-in"></i></a>
+    }
+
+    <!-- Modal -->
+
+</div>
+</header>
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">تسجيل الخروج</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    هل انت متاكد من تسجيل خروجك من البرنامج؟
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">لا</button>
+                    <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Logout", "Account")'">نعم</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

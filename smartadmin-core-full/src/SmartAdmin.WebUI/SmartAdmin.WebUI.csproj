@@ -1,0 +1,92 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>aspnet-SmartAdmin.WebUI-1757DFEF-8A50-4CF6-A39D-79B9DFFE19FC</UserSecretsId>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>true</DelaySign>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants></DefineConstants>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\Reports\offers.frx" />
+    <Content Remove="wwwroot\Reports\receiveRequest.frx" />
+    <Content Remove="wwwroot\Reports\reservation.frx" />
+    <Content Remove="wwwroot\Reports\reservation_Offer.frx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Base\IndexDatatable.cshtml" />
+    <None Include="Views\Base\NotAuthorized.cshtml" />
+    <None Include="Views\Base\PrintReport.cshtml" />
+    <None Include="Views\Base\SaveButtons.cshtml" />
+    <None Include="Views\Base\SessionExpired.cshtml" />
+    <None Include="Views\Shared\Components\Navigation\Default.cshtml" />
+    <None Include="wwwroot\Reports\offers.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Reports\receiveRequest.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Reports\reservation.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Reports\reservation_Offer.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FastReport.OpenSource" Version="2022.2.17" />
+    <PackageReference Include="FastReport.OpenSource.Data.MsSql" Version="2021.4.0" />
+    <PackageReference Include="FastReport.OpenSource.Export.PdfSimple" Version="2022.2.17" />
+    <PackageReference Include="FastReport.OpenSource.Web" Version="2022.2.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.17" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.17" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.17">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="FastReport">
+      <HintPath>C:\Users\P1\Desktop\FastReport.dll</HintPath>
+    </Reference>
+    <Reference Include="FastReport.Bars">
+      <HintPath>C:\Users\P1\Desktop\FastReport.Bars.dll</HintPath>
+    </Reference>
+    <Reference Include="FastReport.Editor">
+      <HintPath>C:\Users\P1\Desktop\FastReport.Editor.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\Reports\invoice.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\Customer\" />
+  </ItemGroup>
+
+</Project>

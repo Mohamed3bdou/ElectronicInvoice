@@ -1,0 +1,18 @@
+﻿@if (Settings.Features.AppFooter)
+{
+<footer class="page-footer" role="contentinfo">
+    <div class="text-center align-items-center flex-1 text-muted" style="font-family: 'Droid Arabic Kufi', serif;font-weight:bold;">
+        <span class="txt-color-white">@(Settings.AppName) v@(Settings.Version) <span class="hidden-xs"> - تم التطوير بواسطة </span>  مدائن الجزيرة </span>
+        <span class="hidden-xs"><img src="@Url.Content("~/img/logo2.png")" alt="Ultra-visions"  style="margin-bottom: 5px;"></span>
+    </div>
+
+    @*<div>
+        <ul class="list-table m-0">
+            <li><a href="/intel/introduction" class="text-secondary fw-700">About</a></li>
+            <li class="pl-3"><a href="/info/applicensing" class="text-secondary fw-700">License</a></li>
+            <li class="pl-3"><a href="/info/appdocs" class="text-secondary fw-700">Documentation</a></li>
+            <li class="pl-3 fs-xl"><a href="https://wrapbootstrap.com/user/Walapa" class="text-secondary" target="_blank"><i class="@(Settings.Theme.IconPrefix) fa-question-circle" aria-hidden="true"></i></a></li>
+        </ul>
+    </div>*@
+</footer>
+}
